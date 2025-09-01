@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>पुष्पीय पौधों में लैंगिक प्रजनन</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e0f2f7;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .ad-container {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin: 15px 0;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        .name-input-section, .quiz-section, .result-section {
+            display: none; /* Hide sections by default */
+        }
+        .name-input-section.active, .quiz-section.active, .result-section.active {
+            display: block;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .input-group input[type="text"] {
+            width: calc(100% - 40px);
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+            max-width: 400px;
+        }
+        .start-btn {
+            display: block;
+            width: 180px;
+            padding: 12px 0;
+            margin: 20px auto 0;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .start-btn:hover {
+            background-color: #218838;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+        }
+        .question-number {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 10px;
+            display: block;
+            font-size: 1.05em;
+        }
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: bold;
+            line-height: 1.5;
+            color: #343a40;
+        }
+        .options label {
+            display: flex; /* Use flexbox for alignment */
+            align-items: center; /* Vertically align items */
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            font-size: 1.1em;
+            background-color: #f8f8f8;
+        }
+        .options label:hover {
+            background-color: #e9ecef;
+            border-color: #cce5ff;
+        }
+        .options input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            /* vertical-align: middle; no need if using flexbox align-items */
+        }
+        .next-btn {
+            display: block;
+            width: 180px;
+            padding: 12px 0;
+            margin: 30px auto 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .next-btn:hover {
+            background-color: #0056b3;
+        }
+        .next-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Feedback colors */
+        .options label.correct {
+            background-color: #d4edda; /* Light green */
+            border-color: #28a745;
+        }
+        .options label.incorrect {
+            background-color: #f8d7da; /* Light red */
+            border-color: #dc3545;
+        }
+
+        .result-section {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            background-color: #e7f7ff;
+        }
+        .result-section h2 {
+            color: #007bff;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+        .result-section p {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .result-section p strong {
+            color: #343a40;
+        }
+        .result-section .score-detail {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .result-section .score-detail.correct-count { color: #28a745; }
+        .result-section .score-detail.incorrect-count { color: #dc3545; }
+        .result-section .score-detail.unanswered-count { color: #ffc107; }
+        .restart-btn {
+            background-color: #6c757d;
+            margin-top: 30px;
+        }
+        .restart-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Ad Container -->
+    <div class="ad-container" id="top-ad">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '4b505c9273cf9161c278efee028f35e2',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/4b505c9273cf9161c278efee028f35e2/invoke.js"></script>
+    </div>
+
+    <div class="container">
+        <h1>पुष्पीय पौधों में लैंगिक प्रजनन</h1>
+
+        <div id="nameInputSection" class="name-input-section active">
+            <div class="input-group">
+                <label for="userName">अपना नाम दर्ज करें:</label>
+                <input type="text" id="userName" placeholder="अपना नाम यहाँ लिखें" required>
+            </div>
+            <button id="startButton" class="start-btn">क्विज शुरू करें</button>
+        </div>
+
+        <div id="quizSection" class="quiz-section">
+            <div class="question-block">
+                <span class="question-number" id="currentQuestionNumber"></span>
+                <p class="question-text" id="questionText"></p>
+                <form id="quizForm">
+                    <div class="options" id="optionsContainer">
+                        <!-- Options will be loaded here by JavaScript -->
+                    </div>
+                    
+                    <!-- Ad above the Next button -->
+                    <div class="ad-container" id="next-button-ad">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : '4b505c9273cf9161c278efee028f35e2',
+                                'format' : 'iframe',
+                                'height' : 50,
+                                'width' : 320,
+                                'params' : {}
+                            };
+                        </script>
+                        <script type="text/javascript" src="//www.highperformanceformat.com/4b505c9273cf9161c278efee028f35e2/invoke.js"></script>
+                    </div>
+                    
+                    <button type="button" id="nextButton" class="next-btn">अगला प्रश्न</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="resultSection" class="result-section">
+            <h2>क्विज परिणाम</h2>
+            <p><strong>परीक्षार्थी:</strong> <span id="displayUserName"></span></p>
+            <p class="score-detail correct-count">सही उत्तर: <span id="correctCount">0</span></p>
+            <p class="score-detail incorrect-count">गलत उत्तर: <span id="incorrectCount">0</span></p>
+            <p class="score-detail unanswered-count">छोड़े गए प्रश्न: <span id="unansweredCount">0</span></p>
+            <button id="restartButton" class="next-btn restart-btn">पुनः प्रयास करें</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Questions from Image 2 (Right Side - Biology) - Q1-22
+            {
+                q: "युग्मक स्थानांतरण किसके द्वारा हो सकता है?",
+                options: ["A) वायु द्वारा", "B) जल द्वारा", "C) जंतु द्वारा", "D) उपरोक्त सभी"],
+                answer: "D"
+            },
+            {
+                q: "निम्न में से कौन उभयलिंगाश्रयी पादप नहीं है?",
+                options: ["A) सरसों", "B) मक्का", "C) गुड़हल", "D) पपीता"],
+                answer: "D"
+            },
+            {
+                q: "निम्न में से कौन एकलिंगी है?",
+                options: ["A) सरसों", "B) गुड़हल", "C) पपीता", "D) इनमें से कोई नहीं"],
+                answer: "C"
+            },
+            {
+                q: "परागण का अर्थ है?",
+                options: ["A) परागकण का वृत्तिवर्ति पर पहुँचना", "B) परागकण का अंडाणु तक पहुँचना", "C) परागकण का अंडाशय तक पहुँचना", "D) इनमें से कोई नहीं"],
+                answer: "A"
+            },
+            {
+                q: "पर परागण किसमें नहीं होता है?",
+                options: ["A) सरसों", "B) मक्का", "C) गुड़हल", "D) इनमें से कोई नहीं"],
+                answer: "D"
+            },
+            {
+                q: "स्व परागण किसमें नहीं होता है?",
+                options: ["A) मटर", "B) धान", "C) गेहूँ", "D) पपीता"],
+                answer: "D"
+            },
+            {
+                q: "वायु परागण किसमें नहीं होता है?",
+                options: ["A) घास", "B) मक्का", "C) गेहूँ", "D) साल्विया"],
+                answer: "D"
+            },
+            {
+                q: "जल परागण किसमें नहीं होता है?",
+                options: ["A) वैलिसनेरिया", "B) कमल", "C) हाइड्रिला", "D) इनमें से कोई नहीं"],
+                answer: "B"
+            },
+            {
+                q: "कीट परागण किसमें नहीं होता है?",
+                options: ["A) सालविया", "B) अंजीर", "C) मक्का", "D) इनमें से कोई नहीं"],
+                answer: "C"
+            },
+            {
+                q: "परागकण का बाह्यचोल होता है?",
+                options: ["A) पतला", "B) मोटा", "C) एकरूप", "D) इनमें से कोई नहीं"],
+                answer: "B"
+            },
+            {
+                q: "परागकण का अंतःचोल होता है?",
+                options: ["A) पतला", "B) मोटा", "C) एकरूप", "D) इनमें से कोई नहीं"],
+                answer: "A"
+            },
+            {
+                q: "परागकणों की बाह्य भित्ति को कहते है?",
+                options: ["A) अंतःचोल", "B) बाह्यचोल", "C) परागकोश", "D) इनमें से कोई नहीं"],
+                answer: "B"
+            },
+            {
+                q: "बीजांड विकसित होकर बनाता है?",
+                options: ["A) फल", "B) बीज", "C) अंडाशय", "D) इनमें से कोई नहीं"],
+                answer: "B"
+            },
+            {
+                q: "अंडाशय विकसित होकर बनाता है?",
+                options: ["A) फल", "B) बीज", "C) बीजांड", "D) इनमें से कोई नहीं"],
+                answer: "A"
+            },
+            {
+                q: "सत्य फल बनता है?",
+                options: ["A) अंडाशय से", "B) पुष्पासन से", "C) बाह्यदल से", "D) इनमें से कोई नहीं"],
+                answer: "A"
+            },
+            {
+                q: "कूट फल बनता है?",
+                options: ["A) अंडाशय से", "B) पुष्पासन से", "C) बाह्यदल से", "D) इनमें से कोई नहीं"],
+                answer: "B"
+            },
+            {
+                q: "निम्न में से कौन एक बीजपत्री नहीं है?",
+                options: ["A) गेहूँ", "B) मक्का", "C) चना", "D) इनमें से कोई नहीं"],
+                answer: "C"
+            },
+            {
+                q: "निम्न में से कौन द्विबीजपत्री नहीं है?",
+                options: ["A) मटर", "B) चना", "C) सेम", "D) धान"],
+                answer: "D"
+            },
+            {
+                q: "निम्न में से कौन पराग कोष में उपस्थित होता है?",
+                options: ["A) पुंकेसर", "B) परागकण", "C) अंडाणु", "D) अंडाशय"],
+                answer: "B"
+            },
+            {
+                q: "अंड समूह में होता है?",
+                options: ["A) अंड", "B) सहायक कोशिका", "C) प्रतिध्रुवी कोशिका", "D) A और B दोनों"],
+                answer: "D"
+            },
+            {
+                q: "भ्रूणपोष किसका परिणाम है?",
+                options: ["A) निषेचन का", "B) दोहरा निषेचन का", "C) युग्मक संलयन का", "D) इनमें से कोई नहीं"],
+                answer: "B"
+            },
+            {
+                q: "भ्रूणपोष में कितने गुणसूत्र होते है?",
+                options: ["A) n", "B) 2n", "C) 3n", "D) 4n"],
+                answer: "C"
+            },
+            // Questions from Image 1 (Left Side - Biology) - Q23-50
+            {
+                q: "पुंकेसर में पराग का निर्माण किसके विखंडन से होता है?",
+                options: ["A) परागकोष", "B) परागपुटी", "C) परागकण", "D) लघुबीजाणुधानी"],
+                answer: "D"
+            },
+            {
+                q: "वायु परागण सामान्यतः किसमें नहीं होता है?",
+                options: ["A) घास में", "B) अनाजों में", "C) मटर में", "D) इनमें से कोई नहीं"],
+                answer: "C"
+            },
+            {
+                q: "ऑफसेटेड्स बीजगाणु निम्नलिखित में से किसमें पाया जाता है?",
+                options: ["A) पिस्टिया में", "B) जलकुम्भी में", "C) दोनों में", "D) इनमें से कोई नहीं"],
+                answer: "C"
+            },
+            {
+                q: "निम्नलिखित में से किसमें वायु परागण नहीं होता है?",
+                options: ["A) घास", "B) मक्का", "C) गेहूँ", "D) इनमें से कोई नहीं"],
+                answer: "D"
+            },
+            {
+                q: "पिस्टिया में वर्धि प्रजनन किसके द्वारा होता है?",
+                options: ["A) बल्ब", "B) ऑफसेट", "C) प्रकन्द", "D) सकर"],
+                answer: "B"
+            },
+            {
+                q: "निम्नलिखित में से कौन द्विगुणित है?",
+                options: ["A) अंड", "B) पराग", "C) युग्मनज", "D) इनमें से कोई नहीं"],
+                answer: "C"
+            },
+            {
+                q: "द्वि�गुणित पादप में गुणसूत्र सूत्रगुणिता होगी?",
+                options: ["A) 2n", "B) 3n", "C) n", "D) 4n"],
+                answer: "A"
+            },
+            {
+                q: "द्वि�गुणित जीव में अर्धसूत्री विभाजन होता है?",
+                options: ["A) युग्मनज में", "B) युग्मकों में", "C) बीजाणुजनन कोशिकाओं में", "D) इनमें से कोई नहीं"],
+                answer: "C"
+            },
+            {
+                q: "अनावृत्तबीजी में दोहरा निषेचन नहीं होता है?",
+                options: ["A) हाँ", "B) नहीं", "C) कभी-कभी", "D) इनमें से कोई नहीं"],
+                answer: "A"
+            },
+            {
+                q: "निम्नलिखित में से कौन-सा फल कूटफल है?",
+                options: ["A) सेब", "B) आम", "C) नाशपाती", "D) A और C दोनों"],
+                answer: "D"
+            },
+            {
+                q: "एक ही पादप में नर तथा मादा पुष्प को क्या कहते हैं?",
+                options: ["A) द्विलिंगाश्रयी", "B) एकलिंगाश्रयी", "C) एकलिंगी", "D) उभयलिंगी"],
+                answer: "D"
+            },
+            {
+                q: "परागकणों का बाह्यचोल किसका बना होता है?",
+                options: ["A) पेक्टोसेल्यूलोज", "B) लिग्निन", "C) स्पोरोपोलिन", "D) पेक्टिन"],
+                answer: "C"
+            },
+            {
+                q: "परागकणों का अंतःचोल किसका बना होता है?",
+                options: ["A) पेक्टिन", "B) सेलुलोज", "C) स्पोरोपोलिन", "D) पेक्टिन और सेलुलोज"],
+                answer: "D"
+            },
+            {
+                q: "गुरु बीजाणुधानी की पहली कोशिका को क्या कहते हैं?",
+                options: ["A) गुरु बीजाणु मातृ कोशिका", "B) गुरु बीजाणु", "C) लघु बीजाणु मातृ कोशिका", "D) लघु बीजाणु"],
+                answer: "A"
+            },
+            {
+                q: "आवृतबीजी पौधों में भ्रूणपोष में गुणसूत्रों की संख्या क्या होती है?",
+                options: ["A) n", "B) 2n", "C) 3n", "D) 4n"],
+                answer: "C"
+            },
+            {
+                q: "निम्नलिखित में से कौन अंड समुच्चय से नहीं जुड़ा है?",
+                options: ["A) अंड कोशिका", "B) सहायक कोशिका", "C) प्रतिध्रुवी कोशिका", "D) इनमें से कोई नहीं"],
+                answer: "C"
+            },
+            {
+                q: "निम्नलिखित में से कौन जलीय घास नहीं है?",
+                options: ["A) हाइड्रीला", "B) वैलिसनेरिया", "C) कमल", "D) इनमें से कोई नहीं"],
+                answer: "C"
+            },
+            {
+                q: "निम्नलिखित में से कौन परागकण को हानि पहुँचाता है?",
+                options: ["A) प्रदूषण", "B) पराग किट", "C) पराग एलर्जी", "D) इनमें से कोई नहीं"],
+                answer: "C"
+            },
+            {
+                q: "भ्रूणपोष का क्या कार्य है?",
+                options: ["A) भ्रूण को पोषण देना", "B) युग्मकों को पोषण देना", "C) परागकणों को पोषण देना", "D) इनमें से कोई नहीं"],
+                answer: "A"
+            },
+            {
+                q: "निम्नलिखित में से किसमें बीज चोल अनुपस्थित होता है?",
+                options: ["A) संतरा", "B) सेब", "C) मटर", "D) इनमें से कोई नहीं"],
+                answer: "D"
+            },
+            {
+                q: "गुरु बीजाणु मातृ कोशिका में अर्धसूत्री विभाजन होता है?",
+                options: ["A) लघु बीजाणु मातृ कोशिका", "B) परागकण", "C) गुरु बीजाणु मातृ कोशिका", "D) नर युग्मक"],
+                answer: "C"
+            },
+            {
+                q: "निम्नलिखित में से कौन-सा फल संचित फल नहीं है?",
+                options: ["A) केला", "B) सेब", "C) कटहल", "D) इनमें से कोई नहीं"],
+                answer: "A"
+            },
+            {
+                q: "पॉलीएम्ब्रियोनी (बहुभ्रूणता) किसमें पाई जाती है?",
+                options: ["A) संतरा", "B) नींबू", "C) एम्ब्रोसिया", "D) उपरोक्त सभी"],
+                answer: "D"
+            },
+            {
+                q: "भ्रूणपोष वाले बीज को क्या कहते हैं?",
+                options: ["A) एंडोस्पर्मिक", "B) नॉन-एंडोス्पर्मिक", "C) अल्बुमिनस", "D) A और C दोनों"],
+                answer: "D"
+            },
+            {
+                q: "निम्नलिखित में से कौन नर युग्मक बनाता है?",
+                options: ["A) अंड कोशिका", "B) परागकण", "C) सहायक कोशिका", "D) इनमें से कोई नहीं"],
+                answer: "B"
+            },
+            {
+                q: "निम्नलिखित में से कौन-सा फूल द्विअंडपी होता है?",
+                options: ["A) सूरजमुखी", "B) गुड़हल", "C) सरसों", "D) इनमें से कोई नहीं"],
+                answer: "C"
+            },
+            {
+                q: "नारियल में तरल भ्रूणपोष किसका परिणाम है?",
+                options: ["A) मुक्त नाभिकीय विभाजन", "B) कोशिका विभाजन", "C) माइटोटिक विभाजन", "D) इनमें से कोई नहीं"],
+                answer: "A"
+            },
+            {
+                q: "जलीय पौधों में कायिक प्रवर्धन किसके द्वारा होता है?",
+                options: ["A) जलकुम्भी", "B) ऑफसेट", "C) बल्बिल्स", "D) उपरोक्त सभी"],
+                answer: "D"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let correctAnswersCount = 0;
+        let incorrectAnswersCount = 0;
+        let unansweredQuestionsCount = 0;
+        let userName = "";
+        let hasAnsweredCurrentQuestion = false; // Flag to track if the current question has been answered
+
+        // DOM elements
+        const nameInputSection = document.getElementById('nameInputSection');
+        const quizSection = document.getElementById('quizSection');
+        const resultSection = document.getElementById('resultSection');
+        const userNameInput = document.getElementById('userName');
+        const startButton = document.getElementById('startButton');
+        const currentQuestionNumber = document.getElementById('currentQuestionNumber');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const nextButton = document.getElementById('nextButton');
+        const displayUserName = document.getElementById('displayUserName');
+        const correctCount = document.getElementById('correctCount');
+        const incorrectCount = document.getElementById('incorrectCount');
+        const unansweredCount = document.getElementById('unansweredCount');
+        const restartButton = document.getElementById('restartButton');
+
+        // Event Listeners
+        startButton.addEventListener('click', startQuiz);
+        nextButton.addEventListener('click', moveToNextQuestion);
+        restartButton.addEventListener('click', resetQuiz);
+
+        function startQuiz() {
+            userName = userNameInput.value.trim();
+            if (userName === "") {
+                alert("कृपया क्विज शुरू करने से पहले अपना नाम दर्ज करें।");
+                return;
+            }
+
+            nameInputSection.classList.remove('active');
+            quizSection.classList.add('active');
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            hasAnsweredCurrentQuestion = false;
+
+            if (currentQuestionIndex < questions.length) {
+                const qData = questions[currentQuestionIndex];
+                currentQuestionNumber.textContent = `प्रश्न ${currentQuestionIndex + 1} / ${questions.length}`;
+                questionText.textContent = qData.q;
+                optionsContainer.innerHTML = ''; // Clear previous options
+
+                qData.options.forEach((option, index) => {
+                    const optionId = `q${currentQuestionIndex}-option${index}`; // Unique ID for input
+                    const label = document.createElement('label');
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `q${currentQuestionIndex}`;
+                    input.value = option.charAt(0); // Assuming options are A), B), C), D)
+                    input.id = optionId; // Assign ID to input
+
+                    label.htmlFor = optionId; // Link label to input via 'for' attribute
+                    label.appendChild(input);
+                    label.appendChild(document.createTextNode(option));
+
+                    // Add an event listener to the LABEL for selection and feedback
+                    label.addEventListener('click', (e) => {
+                        // Ensure click on label also selects the radio button
+                        if (e.target.type !== 'radio') {
+                            input.checked = true;
+                        }
+                        handleAnswer(input, qData.answer);
+                    });
+
+                    // Add event listener directly to input for consistency, though label's click will trigger it
+                    input.addEventListener('change', () => handleAnswer(input, qData.answer));
+
+                    optionsContainer.appendChild(label);
+                });
+            } else {
+                displayResults();
+            }
+        }
+
+        function handleAnswer(selectedInput, correctAnswer) {
+            if (hasAnsweredCurrentQuestion) return; // Prevent changing answer or re-calculating score for the same question
+
+            hasAnsweredCurrentQuestion = true;
+
+            const selectedLabel = selectedInput.closest('label');
+            const selectedValue = selectedInput.value;
+
+            // Mark the selected answer
+            if (selectedValue === correctAnswer) {
+                selectedLabel.classList.add('correct');
+                correctAnswersCount++;
+            } else {
+                selectedLabel.classList.add('incorrect');
+                incorrectAnswersCount++;
+                // Also highlight the correct answer
+                const allOptions = optionsContainer.querySelectorAll('input[type="radio"]');
+                allOptions.forEach(input => {
+                    if (input.value === correctAnswer) {
+                        input.closest('label').classList.add('correct');
+                    }
+                });
+            }
+
+            // Disable all radio buttons after an answer is chosen
+            optionsContainer.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.disabled = true;
+            });
+        }
+
+        function moveToNextQuestion() {
+            // If the current question was not answered (i.e., 'Next' was clicked without selecting an option)
+            if (!hasAnsweredCurrentQuestion && currentQuestionIndex < questions.length) {
+                unansweredQuestionsCount++;
+            }
+            currentQuestionIndex++;
+            displayQuestion();
+        }
+
+        function displayResults() {
+            quizSection.classList.remove('active');
+            resultSection.classList.add('active');
+
+            displayUserName.textContent = userName;
+            correctCount.textContent = correctAnswersCount;
+            incorrectCount.textContent = incorrectAnswersCount;
+            unansweredCount.textContent = unansweredQuestionsCount;
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            correctAnswersCount = 0;
+            incorrectAnswersCount = 0;
+            unansweredQuestionsCount = 0;
+            userName = "";
+            hasAnsweredCurrentQuestion = false;
+
+            userNameInput.value = ""; // Clear name input
+            resultSection.classList.remove('active');
+            nameInputSection.classList.add('active'); // Go back to name input
+        }
+
+        // Initial state: show name input section
+        nameInputSection.classList.add('active');
+    </script>
+</body>
+</html>
